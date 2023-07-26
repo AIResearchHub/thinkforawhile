@@ -1,4 +1,4 @@
-# Transformer Gallery
+# Think-for-a-while
 
 Think-for-a-while is a new idea that aims to teach recurrent transformers to self improve via unrolling. Since different unroll lengths are good for different tasks, we seek to measure a confidence score associated with each prediction and use it as target for less confident unroll lengths. This approach could build knowledge upon existing datasets like mathematical reasoning where some mundane tasks such as 3 digit multiplication requires many small multiplications added together, which should be enhanced with multiple passes through the network. The model can then arrive at better conclusions using building blocks from its own knowledge.
 
