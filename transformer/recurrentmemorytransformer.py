@@ -62,7 +62,7 @@ class RecurrentMemoryTransformer(nn.Module):
         self.reset()
 
         # learnable init mem tokens
-        self.init_mem = nn.Parameter(torch.randn(d_model,))
+        self.init_mem = nn.Parameter(torch.randn(d_model,)).to(self.device)
 
         # custom mask
         self.custom_mask = self.create_custom_mask()
@@ -100,7 +100,7 @@ class RecurrentMemoryTransformer(nn.Module):
             assert mask is None
             mask = self.custom_mask
 
-        x = self.embedding(ids)
+        x = self.embedding(ids).to(self.device)
         xs = x.split(self.num_tokens, dim=-2)
 
         if self.mem is None:

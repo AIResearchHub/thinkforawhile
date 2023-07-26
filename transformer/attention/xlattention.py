@@ -15,11 +15,12 @@ class XLAttention(nn.Module):
     to adjust for different length queries and key/value pair.
     """
 
-    def __init__(self, d_model, n_head):
+    def __init__(self, d_model, n_head, device='cuda:0'):
         super(XLAttention, self).__init__()
         self.d_model = d_model
         self.n_head = n_head
         self.d_head = d_model // n_head
+        self.device = device
 
         self.w_q = nn.Linear(d_model, d_model, bias=True)
         self.w_k = nn.Linear(d_model, d_model, bias=True)
@@ -37,7 +38,8 @@ class XLAttention(nn.Module):
         out:   [batch_size, length, d_model]
         """
         # batch_size, length, d_model = q.shape
-
+        q = q.to(self.device)  # ensure q is on the correct device
+        kv = kv.to(self.device)  # ensure kv is on the correct device
         if mem is not None:
             c = torch.concat([mem, kv], dim=1)
             mem_length = c.size(1) - q.size(1)

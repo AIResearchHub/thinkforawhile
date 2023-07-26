@@ -62,9 +62,9 @@ class TokenEmbedding(nn.Module):
     Token Embedding for transformer
     """
 
-    def __init__(self, vocab_size, d_model):
+    def __init__(self, vocab_size, d_model, device):
         super(TokenEmbedding, self).__init__()
-        self.emb = nn.Embedding(vocab_size, d_model)
+        self.emb = nn.Embedding(vocab_size, d_model).to(device)
 
     def forward(self, ids):
         """
@@ -83,7 +83,8 @@ class TransformerEmbedding(nn.Module):
 
     def __init__(self, vocab_size, d_model, max_len, device):
         super(TransformerEmbedding, self).__init__()
-        self.tok_emb = TokenEmbedding(vocab_size, d_model)
+        self.device = device
+        self.tok_emb = TokenEmbedding(vocab_size, d_model, device)
         self.pos_emb = PositionalEncoding(d_model, max_len, device)
 
     def forward(self, x):
@@ -96,7 +97,7 @@ class TransformerEmbedding(nn.Module):
         Returns:
         token_emb + pos_emb : [batch_size, length, dim]
         """
-        token_emb = self.tok_emb(x)
-        pos_emb = self.pos_emb(token_emb)
+        token_emb = self.tok_emb(x).to(self.device)
+        pos_emb = self.pos_emb(token_emb).to(self.device)
         return token_emb + pos_emb
 
