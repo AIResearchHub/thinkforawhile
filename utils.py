@@ -7,15 +7,20 @@ import logging
 logging.getLogger("pytorch_pretrained_bert.tokenization").setLevel(logging.ERROR)
 
 
-def tokenize(texts):
+def tokenize(texts, type="char"):
     """
     Args:
         texts (List[string]): A list of strings, each string represents a book etc.
+        type (string=char): What tokenizer to use, character level (char) or word level (word)
 
     Returns:
         output (List[List[int]]): A list of list of ints, each list of ints represent a tokenized book
     """
-    tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+    if type == "word":
+        tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+    if type == "char":
+        tokenizer = torch.nn.utils.rnn.CharTokenizer()
+
     return [tokenizer.convert_tokens_to_ids(tokenizer.tokenize(text)) for text in texts]
 
 
