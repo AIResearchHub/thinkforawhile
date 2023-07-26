@@ -1,4 +1,4 @@
 
 
-from .autoregressive_perplexity_sep import test_perplexity_sep
+from .autoregressive_perplexity import test_perplexity
 
