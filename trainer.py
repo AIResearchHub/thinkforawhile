@@ -26,7 +26,7 @@ class AutoregressiveTrainer:
                  ):
 
         self.device = device
-        self.model = nn.DataParallel(model).to(device)
+        self.model = nn.DataParallel(model, device_ids=[0]).to(device)
         self.opt = AdamW(self.model.parameters(), lr=lr)
         # self.opt_schedule = ScheduledOptim(self.opt, self.model.module.d_model, n_warmup_steps=warmup_steps)
 
