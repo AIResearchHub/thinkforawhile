@@ -27,6 +27,8 @@ class XLAttention(nn.Module):
         self.w_v = nn.Linear(d_model, d_model, bias=True)
         self.w_concat = nn.Linear(d_model, d_model, bias=True)
 
+        self.to(device)  # Move the entire model to the device
+
     def forward(self, q, kv, mem=None, mask=None, is_causal=False):
         """
         Parameters:
@@ -41,7 +43,8 @@ class XLAttention(nn.Module):
         q = q.to(self.device)  # ensure q is on the correct device
         kv = kv.to(self.device)  # ensure kv is on the correct device
         if mem is not None:
-            c = torch.concat([mem, kv], dim=1)
+            mem = mem.to(self.device)  # ensure mem is on the correct device
+            c = torch.cat([mem, kv], dim=1)
             mem_length = c.size(1) - q.size(1)
         else:
             c = kv
@@ -52,6 +55,7 @@ class XLAttention(nn.Module):
         q, k, v = self.split(q), self.split(k), self.split(v)
 
         if mem is not None and mask is not None:
+            mask = mask.to(self.device)  # ensure mask is on the correct device
             mask = F.pad(mask, (mem_length, 0, 0, 0), value=1)
 
         out = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, is_causal=is_causal)
@@ -60,34 +64,6 @@ class XLAttention(nn.Module):
         out = self.w_concat(out)
 
         return out
-
-        # q /= math.sqrt(self.d_head)
-        #
-        # # q  [batch_size, n_head, length, d_head]
-        # # k  [batch_size, n_head, length+mem_length, d_head]
-        # attn_score = torch.einsum('bhid,bojd->bhij', (q, k))
-        #
-        # # if mask is not None:
-        # #     attn_score = attn_score.masked_fill(mask == 0, -torch.finfo(attn_score.dtype).max)
-        #
-        # # if is_causal:
-        # i, j = attn_score.shape[-2:]
-        # print(attn_score.shape)
-        # causal_mask = torch.ones((i, j), dtype=torch.bool, device=q.device).triu(j - i + 1)
-        # print(causal_mask.to(torch.int32))
-        # attn_score = attn_score.masked_fill(causal_mask, -torch.finfo(attn_score.dtype).max)
-        #
-        # attn_prob = F.softmax(attn_score, dim=-1)
-        #
-        # # attn_prob [batch_size, n_head, length, length+mem_length]
-        # # v         [batch_size, n_head, length+mem_length, d_head]
-        # out = (attn_prob @ v).transpose(1, 2).reshape(batch_size, length, d_model)
-        # out = self.w_concat(out)
-        #
-        # # out [batch_size, length, d_model]
-        # assert out.shape == (batch_size, length, d_model)
-        #
-        # return out
 
     def split(self, tensor):
         tensor = tensor.view(tensor.size(0), tensor.size(1), self.n_head, self.d_head)
