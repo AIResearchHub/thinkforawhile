@@ -55,7 +55,7 @@ class AutoregressiveLM(nn.Module):
             p=p,
             device=device,
             **kwargs
-        )
+        ).to(device)
 
         self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
 

@@ -25,6 +25,7 @@ class AutoregressiveTrainer:
                  device="cuda:0",
                  ):
 
+        self.device = device
         self.model = nn.DataParallel(model).to(device)
         self.opt = AdamW(self.model.parameters(), lr=lr)
         # self.opt_schedule = ScheduledOptim(self.opt, self.model.module.d_model, n_warmup_steps=warmup_steps)
@@ -94,7 +95,7 @@ class AutoregressiveTrainer:
 
         """
         total_loss = 0
-        inputs, targets = batch[:, :, :-1], batch[:, :, 1:]
+        inputs, targets = batch[:, :, :-1], batch[:, :, 1:].to(self.device)
 
         self.model.module.reset()
         for t in range(self.rollout):
