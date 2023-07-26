@@ -7,8 +7,8 @@ from dataset import TextDataset
 from eval import test_loss, test_memory, test_perplexity, test_perplexity_sep, test_reasoning
 
 
-def main(cache_dir="/media/yh04/New Volume/datasets",
-         device="cuda"):
+def main(cache_dir="./cache/datasets",
+         device="cuda:0"):
 
     model = torch.load("saved/arxivrecsep120000ppl23").to(device)
 

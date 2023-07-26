@@ -2,8 +2,7 @@ import argparse
 from torch.utils.data import DataLoader
 
 from transformer import *
-from autoregressivetrainer import AutoregressiveTrainer
-from berttrainer import BertTrainer
+from trainer import AutoregressiveTrainer
 from dataset import TextDataset
 
 """

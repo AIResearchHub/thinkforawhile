@@ -21,7 +21,7 @@ class AutoregressiveTrainer:
                  seqlen,
                  burnin,
                  rollout,
-                 device="cuda",
+                 device="cuda:0",
                  ):
 
         self.model = nn.DataParallel(model).to(device)

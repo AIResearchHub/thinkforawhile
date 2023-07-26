@@ -29,7 +29,7 @@ class Transformer(nn.Module):
                  d_model=768,
                  n_head=8,
                  p=0.1,
-                 device="cuda",
+                 device="cuda:0",
                  **kwargs
                  ):
 

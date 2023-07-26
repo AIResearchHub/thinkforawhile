@@ -20,7 +20,7 @@ def join(strings):
     return output
 
 
-def main(prompt="therefore, the equation can be written as", num_samples=1, device="cuda"):
+def main(prompt="therefore, the equation can be written as", num_samples=1, device="cuda:0"):
     model = torch.load("saved/arxivrecsep120000ppl23").to(device)
     tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
 
