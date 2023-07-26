@@ -41,9 +41,15 @@ class XLAttention(nn.Module):
         """
         # batch_size, length, d_model = q.shape
         q = q.to(self.device)  # ensure q is on the correct device
+        print(f"q device: {q.device}")
+
         kv = kv.to(self.device)  # ensure kv is on the correct device
+        print(f"kv device: {kv.device}")
+
         if mem is not None:
             mem = mem.to(self.device)  # ensure mem is on the correct device
+            print(f"mem device: {mem.device}")
+
             c = torch.cat([mem, kv], dim=1)
             mem_length = c.size(1) - q.size(1)
         else:
@@ -52,16 +58,23 @@ class XLAttention(nn.Module):
         # q  [batch_size, length, d_model]
         # kv [batch_size, length+mem_length, d_model]
         q, k, v = self.w_q(q), self.w_k(c), self.w_v(c)
+        print(f"w_q weight device: {self.w_q.weight.device}")
+        print(f"w_k weight device: {self.w_k.weight.device}")
+        print(f"w_v weight device: {self.w_v.weight.device}")
+
         q, k, v = self.split(q), self.split(k), self.split(v)
 
         if mem is not None and mask is not None:
             mask = mask.to(self.device)  # ensure mask is on the correct device
+            print(f"mask device: {mask.device}")
+
             mask = F.pad(mask, (mem_length, 0, 0, 0), value=1)
 
         out = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, is_causal=is_causal)
 
         out = rearrange(out, 'b h l d -> b l (h d)')
         out = self.w_concat(out)
+        print(f"w_concat weight device: {self.w_concat.weight.device}")
 
         return out
 
