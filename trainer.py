@@ -21,11 +21,13 @@ class AutoregressiveTrainer:
                  seqlen,
                  burnin,
                  rollout,
+                 warmup_steps,
                  device="cuda:0",
                  ):
 
         self.model = nn.DataParallel(model).to(device)
         self.opt = AdamW(self.model.parameters(), lr=lr)
+        # self.opt_schedule = ScheduledOptim(self.opt, self.model.module.d_model, n_warmup_steps=warmup_steps)
 
         self.criterion = nn.CrossEntropyLoss(ignore_index=-1)
 
