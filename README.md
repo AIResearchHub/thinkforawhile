@@ -1,33 +1,20 @@
-# Transformer Gallery
+# Think-for-a-while
 
-Implementation of transformer papers from scratch without any specific prebuilt functions.
+Think-for-a-while is a new idea that aims to teach recurrent transformers to self improve via unrolling. Since different unroll lengths are good for different tasks, we seek to measure a confidence score associated with each prediction and use it as target for less confident unroll lengths. This approach could build knowledge upon existing datasets like mathematical reasoning where some mundane tasks such as 3 digit multiplication requires many small multiplications added together, which should be enhanced with multiple passes through the network. The model can then arrive at better conclusions using building blocks from its own knowledge.
 
-The purpose of this repository is to understand and benchmark different transformer variants on long sequence benchmarks.
-
-We also aim to quantify different abilities in the long sequence regime such as memory, reasoning, and training speed.
-
-## Transformer Variants
-
-### Transformer
-
-First proposed in "Attention is all you need" paper, transformer is now the backbone of natural language processing.
-
-### Transformer-XL
-
-Transformer-XL stands for Transformer Extra Long, it caches past hidden states at eacb layer to be used as keys and values for the next step. Therefore, information can be propagated forward significantly increasing the context length.
-
-### Longformer
-
-Longformer uses sliding-window attention such that the memory requirements scale linearly instead of quadratically. Attention is performed in overlapping chunks instead of the entire sequence, much like a convolutional neural network. Information outside of the chunks are propagated through deeper layers like a CNN.
-
-### Memorizing Transformer
-
-Memorizing Transformer modifies a layer such that it stores key and value pairs into a kNN search index. In the memorizing layer, self-attention and cross-attention is performed where the self-attention queries is used to search the most similar keys via kNN and cross-attention is done with the queries and retrieved key/value pairs.
+## Recurrent Transformers
 
 ### Block Recurrent Transformer
 
 Block Recurrent Transformer proposes a recurrent layer that maintains a recurrent state like a RNN. In the recurrence layer, 2 self attention and 2 cross attention is performed with 4 different sets of queries from the inputs and recurrent state. BPTT is performed inside the sequence by dividing the it into windows.
 
+### Recurrent Memory Transformer
+
+Recurrent Memory Transformer uses memory tokens to pass on information to the next recurrent time step where gradients are flowed backwards during BPTT. At each timestep, the memory tokens are concatenated from left and right, and new memory tokens are written to the right of the output tokens.
+
+## Transformer Base Code
+
+[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=AIResearchHub&repo=transformergallery)](https://github.com/AIResearchHub/transformergallery)
 
 ## Citations
 
