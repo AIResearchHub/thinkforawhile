@@ -13,11 +13,15 @@ class AutoregressiveTrainer:
     Trains a Large Language Model to predict the next word using causal mask.
     """
 
+    print_every = 5
+    save_every = 1000
+
     def __init__(self,
                  model,
                  dataloader,
                  lr,
                  batch_size,
+                 accum,
                  seqlen,
                  burnin,
                  rollout,
@@ -31,6 +35,7 @@ class AutoregressiveTrainer:
 
         self.dataloader = dataloader
         self.batch_size = batch_size
+        self.accum = accum
 
         self.seqlen = seqlen
         self.burnin = burnin
@@ -64,13 +69,13 @@ class AutoregressiveTrainer:
 
             self.updates += 1
 
-            if i % 5 == 0:
+            if i % self.print_every == 0:
                 print(f"Epoch: {epoch} \t "
                       f"Time: {time.time() - self.start} \t "
                       f"Loss: {loss} \t "
                       f"Sec/Update: {(time.time() - self.start) / self.updates}")
 
-            if i % 1000 == 0:
+            if i % self.save_every == 0:
                 self.model.module.reset()
                 torch.save(self.model, "saved/final")
 

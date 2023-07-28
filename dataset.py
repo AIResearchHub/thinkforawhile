@@ -27,7 +27,8 @@ class TextDataset(Dataset):
                  seq_len,
                  block_len,
                  device="cuda",
-                 sep_padding=False,
+                 sep_padding=True,
+                 sep_padding_prob=0.7,
                  max_len=None):
         super().__init__()
 
@@ -52,7 +53,7 @@ class TextDataset(Dataset):
         self.device = device
 
         if sep_padding:
-            self.data = self.add_sep_padding(self.data, w=128)
+            self.data = self.add_sep_padding(self.data, w=128, p=sep_padding_prob)
 
         if max_len is not None:
             self.data = [x[:max_len] for x in self.data]

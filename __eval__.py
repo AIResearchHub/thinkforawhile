@@ -4,13 +4,13 @@ import torch
 from torch.utils.data import DataLoader
 
 from dataset import TextDataset
-from eval import test_loss, test_memory, test_perplexity, test_perplexity_sep, test_reasoning
+from eval import test_perplexity
 
 
 def main(cache_dir="/media/yh04/New Volume/datasets",
          device="cuda"):
 
-    model = torch.load("saved/arxivrecsep120000ppl23").to(device)
+    model = torch.load("saved/final").to(device)
 
     dataloader = DataLoader(
         TextDataset(
@@ -21,12 +21,11 @@ def main(cache_dir="/media/yh04/New Volume/datasets",
             block_len=5,
             device=device,
             sep_padding=False,
-            # max_len=10
         ),
         batch_size=8,
     )
 
-    ppl = test_perplexity_sep(model, dataloader, device)
+    ppl = test_perplexity(model, dataloader, device)
     print("No [SEP] Perplexity: ", ppl)
 
     dataloader = DataLoader(
@@ -38,11 +37,11 @@ def main(cache_dir="/media/yh04/New Volume/datasets",
             block_len=5,
             device=device,
             sep_padding=True,
-            # max_len=10
+            sep_padding_prob=0.7
         ),
         batch_size=8,
     )
-    ppl = test_perplexity_sep(model, dataloader, device)
+    ppl = test_perplexity(model, dataloader, device)
     print("[SEP] Perplexity: ", ppl)
 
 

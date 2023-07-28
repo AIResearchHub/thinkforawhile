@@ -24,8 +24,9 @@ def main(
     d_model=768,
     n_head=8,
     p=0.1,
-    lr=4e-5,
-    batch_size=32,
+    lr=6e-5,
+    batch_size=8,
+    accum=4,
     burnin=0,
     rollout=5,
     device="cuda",
@@ -53,11 +54,12 @@ def main(
         TextDataset(
             name=dataset,
             cache_dir=cache_dir,
-            split="train[:20000]",
+            split="train[:40000]",
             seq_len=seq_len,
             block_len=rollout,
             device=device,
-            sep_padding=True
+            sep_padding=True,
+            sep_padding_prob=0.7
         ),
         batch_size=batch_size,
     )
@@ -67,6 +69,7 @@ def main(
         dataloader=dataloader,
         lr=lr,
         batch_size=batch_size,
+        accum=accum,
         seqlen=seq_len,
         burnin=burnin,
         rollout=rollout,
