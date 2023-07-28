@@ -156,7 +156,5 @@ def generate_samples_with_sep(model, seq_len, w, prompt_ids=[50, 102],
             pad = pad.unsqueeze(0).repeat(B, 1)
             x = torch.concat((x, pad), dim=-1)
 
-        print(x.shape)
-
     return x
 

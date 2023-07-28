@@ -26,9 +26,9 @@ class TextDataset(Dataset):
                  split,
                  seq_len,
                  block_len,
-                 device="cuda",
-                 sep_padding=True,
-                 sep_padding_prob=0.7,
+                 device="cuda:0",
+                 sep_padding=False,
+                 sep_padding_prob=0.9,
                  max_len=None):
         super().__init__()
 

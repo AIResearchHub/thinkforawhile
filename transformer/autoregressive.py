@@ -33,7 +33,7 @@ class AutoregressiveLM(nn.Module):
                  d_model=512,
                  n_head=8,
                  p=0.1,
-                 device="cuda",
+                 device="cuda:0",
                  **kwargs
                  ):
 
@@ -55,7 +55,7 @@ class AutoregressiveLM(nn.Module):
             p=p,
             device=device,
             **kwargs
-        )
+        ).to(device)
 
         self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
 

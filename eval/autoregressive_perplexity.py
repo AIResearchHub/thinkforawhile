@@ -3,6 +3,8 @@
 import torch
 from torcheval.metrics.text import Perplexity
 
+from utils import remove_padding
+
 
 def test_perplexity(
     model,

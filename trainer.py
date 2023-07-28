@@ -25,10 +25,11 @@ class AutoregressiveTrainer:
                  seqlen,
                  burnin,
                  rollout,
-                 device="cuda",
+                 device="cuda:0",
                  ):
 
-        self.model = nn.DataParallel(model).to(device)
+        self.device = device
+        self.model = nn.DataParallel(model, device_ids=[0]).to(device)
         self.opt = AdamW(self.model.parameters(), lr=lr)
 
         self.criterion = nn.CrossEntropyLoss(ignore_index=-1)
@@ -97,7 +98,7 @@ class AutoregressiveTrainer:
 
         """
         total_loss = 0
-        inputs, targets = batch[:, :, :-1], batch[:, :, 1:]
+        inputs, targets = batch[:, :, :-1], batch[:, :, 1:].to(self.device)
 
         self.model.module.reset()
         for t in range(self.rollout):

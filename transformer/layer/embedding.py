@@ -8,7 +8,7 @@ class PositionalEncoding(nn.Module):
     """
     Compute sinusoid encoding from original transformer paper.
 
-    Parameters:
+    Args:
         d_model (int): dimension of model
         max_len (int): max length of transformer
     """
@@ -41,9 +41,9 @@ class LearnedPositionalEncoding(nn.Module):
     """
     Learned Positional Embedding
 
-    Parameters:
-    d_model (int): Dimension of model
-    max_len (int): Max length of transformer
+    Args:
+        d_model (int): Dimension of model
+        max_len (int): Max length of transformer
     """
 
     def __init__(self, d_model, max_len):
@@ -62,15 +62,15 @@ class TokenEmbedding(nn.Module):
     Token Embedding for transformer
     """
 
-    def __init__(self, vocab_size, d_model):
+    def __init__(self, vocab_size, d_model, device):
         super(TokenEmbedding, self).__init__()
-        self.emb = nn.Embedding(vocab_size, d_model)
+        self.emb = nn.Embedding(vocab_size, d_model).to(device)
 
     def forward(self, ids):
         """
-        Parameters:
-        ids : [batch_size, length]
-        token_emb : [batch_size, length, dim]
+        Args:
+            ids (batch_size, length)
+            token_emb (batch_size, length, dim)
         """
         token_emb = self.emb(ids)
         return token_emb
@@ -83,20 +83,21 @@ class TransformerEmbedding(nn.Module):
 
     def __init__(self, vocab_size, d_model, max_len, device):
         super(TransformerEmbedding, self).__init__()
-        self.tok_emb = TokenEmbedding(vocab_size, d_model)
+        self.device = device
+        self.tok_emb = TokenEmbedding(vocab_size, d_model, device)
         self.pos_emb = PositionalEncoding(d_model, max_len, device)
 
     def forward(self, x):
         """
         Returns complete transformer embedding for transformer layers
 
-        Parameters:
-        x : [batch_size, length]
+        Args:
+            x (batch_size, length)
 
         Returns:
-        token_emb + pos_emb : [batch_size, length, dim]
+            token_emb + pos_emb (batch_size, length, dim)
         """
-        token_emb = self.tok_emb(x)
-        pos_emb = self.pos_emb(token_emb)
+        token_emb = self.tok_emb(x).to(self.device)
+        pos_emb = self.pos_emb(token_emb).to(self.device)
         return token_emb + pos_emb
 

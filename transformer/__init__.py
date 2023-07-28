@@ -3,9 +3,9 @@
 from .autoregressive import AutoregressiveLM
 from .bert import BertLM
 
-from .transformer import Transformer, TransformerHuggingface
+from .transformer import Transformer
 from .transformerxl import TransformerXL
-from .longformer import Longformer, LongformerHuggingface
+from .longformer import Longformer
 from .longformerxl import LongformerXL
 from .memorizingtransformer import MemorizingTransformer
 from .blockrecurrenttransformer import BlockRecurrentTransformer

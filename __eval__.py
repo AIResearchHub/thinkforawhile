@@ -7,8 +7,10 @@ from dataset import TextDataset
 from eval import test_perplexity
 
 
-def main(cache_dir="/media/yh04/New Volume/datasets",
-         device="cuda"):
+def main(
+    cache_dir="./cache/datasets",
+    device="cuda:0"
+):
 
     model = torch.load("saved/final").to(device)
 
